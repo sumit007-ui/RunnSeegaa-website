@@ -8,17 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const particlesContainer = document.getElementById('particles');
   const particleCount = 25;
 
-  for (let i = 0; i < particleCount; i++) {
-    const particle = document.createElement('div');
-    particle.className = 'particle';
-    const size = Math.random() * 4 + 2;
-    particle.style.width = `${size}px`;
-    particle.style.height = `${size}px`;
-    particle.style.left = `${Math.random() * 100}%`;
-    particle.style.animationDuration = `${Math.random() * 10 + 8}s`;
-    particle.style.animationDelay = `${Math.random() * 5}s`;
-    particle.style.opacity = Math.random() * 0.5 + 0.25;
-    particlesContainer.appendChild(particle);
+  if (particlesContainer) {
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      const size = Math.random() * 4 + 2;
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.animationDuration = `${Math.random() * 10 + 8}s`;
+      particle.style.animationDelay = `${Math.random() * 5}s`;
+      particle.style.opacity = Math.random() * 0.5 + 0.25;
+      particlesContainer.appendChild(particle);
+    }
   }
 
   // --- 2. Interactive Parallax & 3D Depth Shift ---
@@ -39,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Normalized [-1, 1] range relative to screen center
     mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
     mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-  });
+  }, { passive: true });
 
   // Smooth RAF animation loop for 3D depth shifting
   function animateParallax() {
@@ -82,5 +84,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Crossfade every 4.5 seconds
   setInterval(nextBgSlide, 4500);
+
+  // --- 4. Offline / Online Connection Status Handler ---
+  const offlineToast = document.getElementById('offlineToast');
+
+  function updateOnlineStatus() {
+    if (!offlineToast) return;
+    const textSpan = offlineToast.querySelector('span');
+    const icon = offlineToast.querySelector('i');
+
+    if (!navigator.onLine) {
+      offlineToast.classList.remove('online-restored');
+      if (textSpan) textSpan.textContent = 'You are currently offline. Please check your internet connection.';
+      if (icon) icon.className = 'fa-solid fa-wifi-slash';
+      offlineToast.classList.add('show');
+    } else {
+      if (offlineToast.classList.contains('show')) {
+        offlineToast.classList.add('online-restored');
+        if (textSpan) textSpan.textContent = 'Internet connection restored!';
+        if (icon) icon.className = 'fa-solid fa-wifi';
+        setTimeout(() => {
+          offlineToast.classList.remove('show', 'online-restored');
+        }, 3200);
+      }
+    }
+  }
+
+  window.addEventListener('online', updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+
+  // Initial check on load
+  if (!navigator.onLine) {
+    updateOnlineStatus();
+  }
 
 });

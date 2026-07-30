@@ -1,0 +1,6 @@
+# RunnSeegaa.in Robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap declaration
+Sitemap: https://runnseegaa.in/sitemap.xml
