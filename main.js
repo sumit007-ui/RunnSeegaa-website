@@ -85,37 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Crossfade every 4.5 seconds
   setInterval(nextBgSlide, 4500);
 
-  // --- 4. Offline / Online Connection Status Handler ---
-  const offlineToast = document.getElementById('offlineToast');
 
-  function updateOnlineStatus() {
-    if (!offlineToast) return;
-    const textSpan = offlineToast.querySelector('span');
-    const icon = offlineToast.querySelector('i');
-
-    if (!navigator.onLine) {
-      offlineToast.classList.remove('online-restored');
-      if (textSpan) textSpan.textContent = 'You are currently offline. Please check your internet connection.';
-      if (icon) icon.className = 'fa-solid fa-wifi-slash';
-      offlineToast.classList.add('show');
-    } else {
-      if (offlineToast.classList.contains('show')) {
-        offlineToast.classList.add('online-restored');
-        if (textSpan) textSpan.textContent = 'Internet connection restored!';
-        if (icon) icon.className = 'fa-solid fa-wifi';
-        setTimeout(() => {
-          offlineToast.classList.remove('show', 'online-restored');
-        }, 3200);
-      }
-    }
-  }
-
-  window.addEventListener('online', updateOnlineStatus);
-  window.addEventListener('offline', updateOnlineStatus);
-
-  // Initial check on load
-  if (!navigator.onLine) {
-    updateOnlineStatus();
-  }
 
 });
